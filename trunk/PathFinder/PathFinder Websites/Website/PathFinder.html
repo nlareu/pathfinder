@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Path Finder</title>
+
+    <link href="styles/PathFinderControler.css" rel="stylesheet" type="text/css" />
+    <link href="styles/PathFinder.css" rel="stylesheet" type="text/css" />
+
+    <script src="scripts/Map.js" type="text/javascript"></script>
+    <script src="scripts/GeneratedMap.js" type="text/javascript"></script>
+    <script src="scripts/Standard.js" type="text/javascript"></script>
+    <script src="scripts/PathFinderCaracol.js" type="text/javascript"></script>
+    <script src="scripts/PathFinderControler.js" type="text/javascript"></script>
+
+    <style type="text/css">
+        
+        /*.MapContainer .Cell {
+	        height:15px;
+	        width:15px;
+        }*/
+        
+    </style>
+
+</head>
+<body>
+    <div id="mapContainer">
+        <div id="mbContainer"></div>
+    </div>
+    <div class="controlerContainer">
+        <div class="controler">
+            <input type="button" value="play" onclick="play();" style="width:80px;height:22px;margin-left:10px;" />
+            <input type="button" value="stop" onclick="stop();" style="width:80px;height:22px;margin-left:10px;margin-top:10px;" />    
+            <input type="checkbox"  id="chkAuto" checked="checked" /><p>Automatic</p>
+            <input type="button" value="reset" onclick="reset();" style="width:80px;height:22px;margin-left:10px;margin-top:10px;" />
+        </div>
+    </div>
+
+    <script type="text/javascript" language="javascript">
+
+        var pf;
+        var intervalID;        
+//        var MapInstance = new Map();
+        var mapMatrixMP = 
+            new MapMatrix({ MatrixSource: GeneratedMap, Events: { onError: function (e) { console.error(e); } } });
+//            MapInstance.GenerateMap('51x37'); //51x37 //12x21//20x20//15x19//15x15//4x4//50x35
+        var controler;
+
+//        function hola(){ 
+//            return arguments.callee.toString().match(/^function\s(\w+)/)
+//        }
+
+        window.onload = function ()
+        {
+            pf = new PathFinderCaracol(mapMatrixMP, { Events: { onError: function (e) { console.error(e); }, onMoveComplete: moveComplete } });
+
+            controler = new PathFinderControler(document.getElementById('mbContainer'), { Algorithm: pf, Events: { onError: function (e) { console.error(e); } }, MatrixSource: mapMatrixMP });
+            controler.Redraw(GeneratedMap);
+            //controler.Redraw({ MatrixVectorial: map});
+        }
+
+        function moveComplete(y,x){
+            var result = controler.UpdatePosition(y,x);
+
+            if (result == true) {
+                setTimeout(
+                    function() {
+                        stop();
+
+                        alert('Congratulations!!');
+                    },
+                    100
+                );
+            }
+        }
+
+        function stop() {
+            clearInterval(intervalID);
+            intervalID = null;
+            //controler.Stop();
+        }
+
+        function play()
+        {
+            if (chkAuto.checked == true) 
+            {
+                controler.Play();
+                intervalID = setTimeout(play, 100);
+            }
+            else
+            {
+                controler.Play();
+            }
+        }
+
+        function reset() {
+//            pf.Reset();
+//            controler.Reset();
+        };
+
+    </script>
+</body>
+</html>
+
+
