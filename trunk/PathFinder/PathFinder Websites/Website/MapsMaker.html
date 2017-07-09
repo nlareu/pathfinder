@@ -1,0 +1,243 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+    <title>Maps Maker</title>
+
+    <link href="styles/PathFinderControler.css" rel="stylesheet" type="text/css" />
+    <link href="styles/MapsMaker.css" rel="stylesheet" type="text/css" />
+
+    <script src="scripts/Standard.js" type="text/javascript"></script>
+    <script src="scripts/PathFinderControler.js" type="text/javascript"></script>
+
+    <script type="text/javascript">
+
+
+        Global.Events.AttachDomReadyEventHandler(function () {
+            try {
+                Global.Events.AttachEventHandler(window, "onresize", Window_Resize);
+
+                var height = 10;
+                var width = 10;
+                var factorSize = 30;
+
+                //                var pointEnd = { X: 1, Y: 1 };
+                //                var pointStart = { X: 1, Y: 1 };
+
+                var ControlsList = [];
+                var controlTabIndex = -1;
+
+                var HeightInput = document.getElementById("heightInput");
+                HeightInput.value = height;
+                HeightInput.TabIndex = ++controlTabIndex;
+                Global.Events.AttachEventHandler(HeightInput, "onkeypress", Input_KeyPress);
+                Global.Events.AttachEventHandler(HeightInput, "onkeyup", Input_KeyUp);
+                Global.Events.AttachEventHandler(HeightInput, "onblur", Input_Blur);
+                Global.Events.AttachEventHandler(HeightInput, "onfocus", Input_Focus);
+                ControlsList.push(HeightInput);
+
+                var WidthInput = document.getElementById("widthInput")
+                WidthInput.value = width;
+                WidthInput.TabIndex = ++controlTabIndex;
+                Global.Events.AttachEventHandler(WidthInput, "onkeypress", Input_KeyPress);
+                Global.Events.AttachEventHandler(WidthInput, "onkeyup", Input_KeyUp);
+                Global.Events.AttachEventHandler(WidthInput, "onblur", Input_Blur);
+                Global.Events.AttachEventHandler(WidthInput, "onfocus", Input_Focus);
+                ControlsList.push(WidthInput);
+
+                var FactorSizeInput = document.getElementById("factorSizeInput");
+                FactorSizeInput.value = factorSize.toString();
+                FactorSizeInput.TabIndex = ++controlTabIndex;
+                Global.Events.AttachEventHandler(FactorSizeInput, "onkeypress", Input_KeyPress);
+                Global.Events.AttachEventHandler(FactorSizeInput, "onkeyup", Input_KeyUp);
+                Global.Events.AttachEventHandler(FactorSizeInput, "onblur", Input_Blur);
+                Global.Events.AttachEventHandler(FactorSizeInput, "onfocus", Input_Focus);
+                ControlsList.push(FactorSizeInput);
+
+                var ResizeButton = document.getElementById("resizeButton")
+                ResizeButton.TabIndex = ++controlTabIndex;
+                Global.Events.AttachEventHandler(ResizeButton, "onclick", ResizeButton_Click);
+                ControlsList.push(ResizeButton);
+
+                var CreateButton = document.getElementById("createButton")
+                CreateButton.TabIndex = ++controlTabIndex;
+                Global.Events.AttachEventHandler(CreateButton, "onclick", CreateButton_Click);
+                ControlsList.push(CreateButton);
+
+                var MatrixJSONAreaContainer = document.getElementById("matrixJSONAreaContainer");
+
+                var MatrixJSONAreaHideButton = document.getElementById("matrixJSONAreaHideButton")
+                Global.Events.AttachEventHandler(MatrixJSONAreaHideButton, "onclick", MatrixJSONAreaHideButton_Click);
+
+                //Draw position status types to paint collection
+                var BlockItemsToPaintContainer = document.getElementById("blockItemsToPaintContainer");
+                for (var btn in window.BLOCK_TYPES.Names)
+                {
+                    if(window.BLOCK_TYPES.Names[btn].ID != window.BLOCK_TYPES.Names.Move)   
+                    {
+                        var btItem = document.createElement("div");
+                        btItem.className = "BlockItem Block" + btn;
+                        btItem.BlockTypeToPaint = window.BLOCK_TYPES.Names[btn];
+
+                        window.Global.Events.AttachEventHandler(btItem, "onclick", BlockItem_Click);
+
+                        BlockItemsToPaintContainer.appendChild(btItem);
+                    }
+                }
+
+                var mbOptions =
+                {
+                    EditionMode: { Enabled: true }
+                    , Events: { onError: function (e) { console.error(e); } }
+                    , FactorSize: factorSize
+                    , Size: { Height: height, Width: width }
+                };
+                var PathFinderControlerInstance = new PathFinderControler(document.getElementById("mbContainer"), mbOptions);
+                PathFinderControlerInstance.Redraw({ Size: { Height: Math.round(HeightInput.value), Width: Math.round(WidthInput.value)} });
+
+
+                //#region Events
+
+                function BlockItem_Click(e) {
+                    try {
+                        var btItem = e.srcElement || e.target;
+
+                        PathFinderControlerInstance.SetCurrentBlockTypeToPaint(btItem.BlockTypeToPaint);
+                    }
+                    catch (Error) { console.error(Error); }
+                }
+
+                function CreateButton_Click(e)
+                {
+                    try
+                    {
+                        matrixJSONArea.value = Global.JSONEncode(PathFinderControlerInstance.GetMatrix());
+
+                        MatrixJSONAreaContainer.style.display = "block";
+                    }
+                    catch (Error) { console.error(Error); }
+                }
+
+                function Input_Blur(e) {
+                    try {
+                        var input = e.srcElement || e.target;
+                        input.value = Math.round(input.value);
+                    }
+                    catch (Error) { console.error(Error); }
+                }
+
+                function Input_Focus(e) {
+                    try {
+                        (e.srcElement || e.target).select();
+                    }
+                    catch (Error) { console.error(Error); }
+                }
+
+                function Input_KeyPress(e) {
+                    try {
+                        if (e.keyCode == 13)
+                        {
+                            var input = e.srcElement || e.target;
+                            input.value = Math.round(input.value);
+                        }
+                    }
+                    catch (Error) { console.error(Error); }
+                }
+
+                function Input_KeyUp(e) {
+                    try
+                    {
+                        if (e.keyCode == 13)
+                            ControlsList[(e.srcElement || e.target).TabIndex + 1].focus();
+                    }
+                    catch (Error) { console.error(Error); }
+                }
+
+                function MatrixJSONAreaHideButton_Click(e) {
+                    try {
+                        MatrixJSONAreaContainer.style.display = "none";
+                    }
+                    catch (Error) { console.error(Error); }
+                }
+
+                function ResizeButton_Click(e)
+                {
+                    try
+                    {
+                        PathFinderControlerInstance.Redraw({ Size: { Height: Math.round(HeightInput.value), Width: Math.round(WidthInput.value)} });
+                    }
+                    catch (Error) { console.error(Error); }
+                }
+
+                function Window_Resize(e) {
+                    try {
+                        var MapsBuilderContainer = document.getElementById("mapsBuilderContainer");
+
+                        document.body.style.height =
+                        MapsBuilderContainer.style.height = window.GetRealHeigth(window);
+
+                        document.body.style.width =
+                        MapsBuilderContainer.style.width = window.GetRealWidth(window);
+                    }
+                    catch (Error) { console.error(Error); }
+                }
+
+                //#endregion
+            }
+            catch (Error) { console.error(Error); }
+        });
+
+    </script>
+
+</head>
+<body>
+    <div id="mapsBuilderContainer">
+        <div id="builderBarContainer">
+            <div id="builderBar">
+                <div id="fieldsContainer">
+                    <!--<div class="Title">Dimensions:</div>-->
+                    <div class="Field">
+                        <div class="Label">Height:</div>
+                        <input type="text" id="heightInput" class="Data" />
+                    </div>
+                    <div class="Field">
+                        <div class="Label">Width:</div>
+                        <input type="text" id="widthInput" class="Data" />
+                    </div>
+                    <div class="Field">
+                        <div class="Label">Factor Size:</div>
+                        <input type="text" id="factorSizeInput" class="Data" />
+                    </div>
+                    <div class="Field">
+                        <input type="button" id="resizeButton" class="Data" value="Resize"/>
+                    </div>
+            <!--        <div class="Title">Start Point:</div>
+                    <div class="Field">
+                        <div class="Label">Start:</div>
+                        <input type="text" id="startPointInput" class="Data" />
+                    </div>
+                    <div class="Field">
+                        <div class="Label">End:</div>
+                        <input type="text" id="endPointInput" class="Data" />
+                    </div>-->
+                </div>
+                <div id="blockItemsToPaintContainer"></div>
+                <input type="button" id="createButton" value="Create"/>
+            </div>
+        </div>
+
+        <div id="mapContainer">
+            <div id="mbContainer"></div>
+        </div>
+
+        <div id="matrixJSONAreaContainer">
+            <input type="button" id="matrixJSONAreaHideButton" value="Hide"/>
+            <textarea id="matrixJSONArea" rows="0" cols="0"></textarea>
+        </div>
+    </div>
+</body>
+</html>
+
+
+<!-- QU el map container sea resizable por javascript el height -->
+<!-- POner mas oindos los btitem con un div chicquito ocn el color y el nombre al lado. -->

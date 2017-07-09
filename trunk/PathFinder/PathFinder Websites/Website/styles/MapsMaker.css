@@ -1,0 +1,164 @@
+﻿body {
+	position:relative;
+    top:0;
+    left:0;
+    margin:0;
+    height:auto;
+    width:auto;
+}
+
+#blockItemsToPaintContainer {
+    position:relative;
+    top:0;
+    left:0;
+    height:auto;
+    margin:auto;
+    margin-bottom:10px;
+    margin-top:10px;
+    width:90%;
+    border:1px solid #000000;
+    cursor:pointer;
+}
+        
+#blockItemsToPaintContainer .BlockItem {
+    position:relative;
+    top:0;
+    left:0;
+    height:30px;
+    width:100%;
+    border-bottom:1px solid #000000;
+    cursor:pointer;
+}
+
+#fieldsContainer {
+    position:relative; 
+    top:0; 
+    left:0; 
+    height:auto; 
+    width:auto; 
+    background-color:transparent; 
+    display:inline-block;
+}
+
+/*#fieldsContainer .Title {
+        position:relative;
+        float:left;
+        top:0; 
+        left:0;
+        height: auto;
+        width: auto; 
+        text-indent:5px;
+        font-size:larger;
+}*/
+
+#fieldsContainer .Field {
+    position:relative; 
+    top:0; 
+    left:0;
+    margin:0; 
+    height:auto; 
+    width:auto;
+}
+        
+#fieldsContainer .Label {
+    position:relative; 
+    float:left; 
+    top:5px; 
+    left:0; 
+    height:auto; 
+    width:auto;
+    text-indent:5px;
+}
+        
+#fieldsContainer .Data {
+    position:relative; 
+    float:left; 
+    top:0; 
+    left:0;
+    margin-left:10px; 
+    height:auto; 
+    width:60px;
+}
+
+#builderBar {
+    position:relative; 
+    top:0; 
+    left:0; 
+    margin:0;
+    height:100%;
+    width:100%;
+    background-color: transparent;
+}
+        
+#builderBarContainer {
+    position:relative; 
+    top:0;
+    left:0;
+    float:left;
+    height:100%;
+    width:20%;
+    border:1px solid #000000;
+    display:inline-block;
+    overflow:auto;
+}
+
+#mapsBuilderContainer {
+	position:relative;
+    top:0;
+    left:0;
+    margin:0;
+}
+ 
+#mapContainer {
+    position:absolute;
+    /*float:left;*/
+    top:0;
+    left:21%;
+    height:100%;
+    width:79%;
+}
+        
+#mbContainer {
+    position:absolute;
+    top:0;
+    left:0;
+    margin:5%;
+    height:auto;
+    width:auto;
+}
+
+#matrixJSONAreaContainer {
+	position:absolute;
+    top:100px;
+    left:0;
+    margin-left:5%;
+    margin-right:5%;
+    height:500px;
+    width:90%;
+    background-color: #00FFFF;
+    border:5px solid #00AAFF;
+    display:none;
+    z-index: 300;
+}
+
+#matrixJSONArea {
+    position:relative;
+    top:0;
+    left:0;
+    margin:0;
+    margin-left:5%;
+    margin-right:5%;
+    height:90%;
+    width:90%;
+}
+
+#matrixJSONAreaHideButton {
+    position:relative;
+    float:right;
+    top:0;
+    left:0;
+    margin:0;
+    /*margin-right:5px;*/
+    height:auto;
+    width:auto;
+}
