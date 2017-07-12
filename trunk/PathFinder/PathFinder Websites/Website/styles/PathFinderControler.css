@@ -43,8 +43,8 @@
 	top:0;
 	left:0;
 	margin:0;
-	/*height:30px;
-	width:30px;*/
+	height:30px;
+	width:30px;
 	/* float: left; */
 }
 
@@ -116,8 +116,8 @@
 	display:table-cell;
 }
 
-.MapContainer .MapSubContainer .GridContainer .CellLast {
-	border-right:none !important;
+.MapContainer .MapSubContainer .GridContainer .RowLast .BlockLast {
+	border-right:none;
 }
 
 .MapContainer .BarLabels {
