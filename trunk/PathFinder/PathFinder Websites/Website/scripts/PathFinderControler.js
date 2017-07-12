@@ -48,7 +48,7 @@
                 if (!MyReference.Events.Error)
                     MyReference.Events.Error = [function (error) { window.status = error.Message; } ];
                 if(!MyReference.FactorSize)
-                    MyReference.FactorSize = 30;
+                    MyReference.FactorSize = null;
 
                 MyReference.MatrixSource = new MapMatrix(MyReference.MatrixSource);
 
@@ -143,9 +143,12 @@
                             barLabel.appendChild(label);
                         }
 
+                        if (label)
+                            label.className = labelBaseClassName + " LabelLast";
+
                         if (horizontalMode) {
                             var labelEmptyRight = document.createElement("div");
-                            labelEmptyRight.className = labelBaseClassName + " LabelLast";
+                            labelEmptyRight.className = labelBaseClassName;
                             labelEmptyRight.innerHTML = "&nbsp";
 
                             if(MyReference.FactorSize != null)
@@ -155,10 +158,6 @@
                             }
 
                             barLabel.appendChild(labelEmptyRight);
-                        }
-                        else {
-                            if (label)
-                                label.className = labelBaseClassName + " LabelLast";
                         }
                     }
                     catch (Error) { MyReference.Events.onError(Error); }
@@ -355,10 +354,6 @@
 
                             gridContainer.appendChild(row);
                         }
-
-
-                        row.className += " RowLast";
-
 
                         gridContainer.className = "GridContainer";
 

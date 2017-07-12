@@ -128,6 +128,7 @@
 	width:auto;
 	background-color:#CECECE;
 	border:1px solid #000000;
+	display: none !important;
 }
 
 .MapContainer .BarLabels .Label {
