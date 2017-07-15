@@ -29,8 +29,8 @@
 
                 //#region Set optional options default values
 
-                if (!MyReference.Algorithm)
-                    MyReference.Algorithm = null;
+                //if (!MyReference.Algorithms)
+//                    MyReference.Algorithms = [];
                 if (!MyReference.EditionMode)
                     MyReference.EditionMode = {};
                 if (!MyReference.EditionMode.Enabled)
@@ -64,6 +64,7 @@
 
                 //#region Properties
 
+                MyReference.Algorithms = [];
                 MyReference.Container = null;
                 MyReference.CurrentBlockTypeToPaint = window.BLOCK_TYPES.Names.Wall; //Current Position Status Type to Paint
                 MyReference.EditionMode.IsMouseDown = false;
@@ -100,6 +101,24 @@
                         }
                     }
                     catch (Error) { MyReference.Events.onError(Error); }
+                };
+                MyReference.Public.AddAlgorithm =
+                MyReference.AddAlgorithm = function(algorithm) {
+                    try
+                    {
+                        MyReference.Algorithms.push(algorithm);
+
+                        algorithm.SetControler(MyReference);
+                    }
+                    catch (Error) { MyReference.Events.onError(Error); }
+                };
+                MyReference.Public.AskForPermissionToMove =
+                MyReference.AskForPermissionToMove = function (finder) { 
+                    //Wait for some time to call move to do it really.
+                    setTimeout(
+                        finder.Move,
+                        100
+                    );
                 };
                 MyReference.FillBarLabel = function(barLabel, count, horizontalMode) {
                     try {
@@ -231,8 +250,12 @@
                 MyReference.Play = function() {
                     try
                     {
-                        if (MyReference.Algorithm.isNotComplete())
-                            MyReference.Algorithm.Play();
+                        //if (MyReference.Algorithm.isNotComplete())
+                        //    MyReference.Algorithm.Play();
+
+                        for (var i = 0, len = MyReference.Algorithms.length; i < len; i++) {
+                            MyReference.Algorithms[i].Play();
+                        }
                     }
                     catch (Error) { MyReference.Events.onError(Error); }
                 };

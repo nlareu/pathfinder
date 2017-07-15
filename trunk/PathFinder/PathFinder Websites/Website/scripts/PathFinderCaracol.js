@@ -79,6 +79,9 @@ delete btIndex;
 
                 //#region Set optional options default values
 
+                //if(!MyReference.Controler)
+                    //throw new Error('Controler must be configured.');
+
                 if(!MyReference.DirectionsCount)
                     MyReference.DirectionsCount = 4;
                 if(!MyReference.Events)
@@ -100,6 +103,7 @@ delete btIndex;
 
                 //#region Properties
 
+                MyReference.Controler = null;
                 MyReference.CurrentStatus = null;
                 MyReference.Directions = [];
                 for(var iDir = 0; iDir < MyReference.DirectionsCount; iDir++)
@@ -211,7 +215,7 @@ delete btIndex;
                         else if(leftPoint == _POSITION_STATUS_TYPES.End)
                         {
                             //Call itself again
-                            MyReference.Events.onMoveComplete(MyReference.CurrentStatus.Y + ld.MY - 1, MyReference.CurrentStatus.X + ld.MX - 1, 0);
+                            MyReference.DoMove(MyReference.CurrentStatus.Y + ld.MY - 1, MyReference.CurrentStatus.X + ld.MX - 1, 0);
                             MyReference.isNotComplete = false;
         //                    setTimeout(MyReference.Move, MyReference.MoveInterval);
                             return;
@@ -264,7 +268,7 @@ delete btIndex;
                         else if(forwardPoint == _POSITION_STATUS_TYPES.End)
                         {
                             //Call itself again
-                            MyReference.Events.onMoveComplete(MyReference.CurrentStatus.Y + fd.MY - 1, MyReference.CurrentStatus.X + fd.MX - 1, 0);
+                            MyReference.DoMove(MyReference.CurrentStatus.Y + fd.MY - 1, MyReference.CurrentStatus.X + fd.MX - 1, 0);
                             MyReference.isNotComplete = false;
         //                    setTimeout(MyReference.Move, MyReference.MoveInterval);
                             return;
@@ -316,7 +320,7 @@ delete btIndex;
                         else if(rightPoint == _POSITION_STATUS_TYPES.End)
                         {
                             //Call itself again
-                            MyReference.Events.onMoveComplete(MyReference.CurrentStatus.Y + rd.MY - 1, MyReference.CurrentStatus.X + rd.MX - 1, 0);
+                            MyReference.DoMove(MyReference.CurrentStatus.Y + rd.MY - 1, MyReference.CurrentStatus.X + rd.MX - 1, 0);
                             MyReference.isNotComplete = false;
         //                    setTimeout(MyReference.Move, MyReference.MoveInterval);
                             return;
@@ -367,7 +371,7 @@ delete btIndex;
                         else if(backwardPoint == _POSITION_STATUS_TYPES.End)
                         {
                             //Call itself again
-                            MyReference.Events.onMoveComplete(MyReference.CurrentStatus.Y + bd.MY - 1, MyReference.CurrentStatus.X + bd.MX - 1, 0);
+                            MyReference.DoMove(MyReference.CurrentStatus.Y + bd.MY - 1, MyReference.CurrentStatus.X + bd.MX - 1, 0);
                             MyReference.isNotComplete = false;
         //                    setTimeout(MyReference.Move, MyReference.MoveInterval);
                             return;
@@ -390,8 +394,8 @@ delete btIndex;
                             MyReference.CurrentStatus.X += nextDirection.MX;
                             MyReference.CurrentStatus.Y += nextDirection.MY;
                     
-                            //Call onMoveComplete
-                            MyReference.Events.onMoveComplete(MyReference.CurrentStatus.Y - 1, MyReference.CurrentStatus.X - 1);
+                            //Call DoMove
+                            MyReference.DoMove(MyReference.CurrentStatus.Y - 1, MyReference.CurrentStatus.X - 1);
                     
                             MyReference.UpdatePosiblesWays();
                     
@@ -400,6 +404,17 @@ delete btIndex;
                         }
                     }
                     catch(Error){ MyReference.Events.onError(Error); }    
+                };
+                MyReference.DoMove = function (y, x) {
+                    //Use a settmeout to fire the event after finish the current stack.
+                    setTimeout(
+                        function() {
+                            MyReference.Events.onMoveComplete(y, x, 0);
+
+                            MyReference.Play();
+                        },
+                        1
+                    );
                 };
                 MyReference.GetStage = function(matrixJSON) {
                     var stage = null;
@@ -496,8 +511,8 @@ delete btIndex;
                             MyReference.CurrentStatus.X = lx;
                             MyReference.CurrentStatus.Y = ly;
                     
-                            //Call onMoveComplete
-                            MyReference.Events.onMoveComplete(MyReference.CurrentStatus.Y - 1, MyReference.CurrentStatus.X - 1, 0);
+                            //Call DoMove
+                            MyReference.DoMove(MyReference.CurrentStatus.Y - 1, MyReference.CurrentStatus.X - 1, 0);
                     
                             MyReference.UpdatePosiblesWays();
                     
@@ -528,8 +543,8 @@ delete btIndex;
                             MyReference.CurrentStatus.X = fx;
                             MyReference.CurrentStatus.Y = fy;
                     
-                            //Call onMoveComplete
-                            MyReference.Events.onMoveComplete(MyReference.CurrentStatus.Y - 1, MyReference.CurrentStatus.X - 1, 0);
+                            //Call DoMove
+                            MyReference.DoMove(MyReference.CurrentStatus.Y - 1, MyReference.CurrentStatus.X - 1, 0);
                     
                             MyReference.UpdatePosiblesWays();
 
@@ -561,8 +576,8 @@ delete btIndex;
                             MyReference.CurrentStatus.X = rx;
                             MyReference.CurrentStatus.Y = ry;
                     
-                            //Call onMoveComplete
-                            MyReference.Events.onMoveComplete(MyReference.CurrentStatus.Y - 1, MyReference.CurrentStatus.X - 1, 0);
+                            //Call DoMove
+                            MyReference.DoMove(MyReference.CurrentStatus.Y - 1, MyReference.CurrentStatus.X - 1, 0);
                     
                             MyReference.UpdatePosiblesWays();
                     
@@ -588,8 +603,8 @@ delete btIndex;
                         MyReference.CurrentStatus.X = nextPosible.X;
                         MyReference.CurrentStatus.Y = nextPosible.Y;
                 
-                        //Call onMoveComplete
-                        MyReference.Events.onMoveComplete(MyReference.CurrentStatus.Y - 1, MyReference.CurrentStatus.X - 1, 0);
+                        //Call DoMove
+                        MyReference.DoMove(MyReference.CurrentStatus.Y - 1, MyReference.CurrentStatus.X - 1, 0);
                 
                         MyReference.UpdatePosiblesWays();
                 
@@ -669,7 +684,7 @@ delete btIndex;
                         else if(leftPoint == _POSITION_STATUS_TYPES.End)
                         {
                             //Call itself again
-                            MyReference.Events.onMoveComplete(MyReference.CurrentStatus.Y + ld.MY - 1, MyReference.CurrentStatus.X + ld.MX - 1, 0);
+                            MyReference.DoMove(MyReference.CurrentStatus.Y + ld.MY - 1, MyReference.CurrentStatus.X + ld.MX - 1, 0);
                             MyReference.isNotComplete = false;
         //                    setTimeout(MyReference.Move, MyReference.MoveInterval);
                             return;
@@ -735,7 +750,7 @@ delete btIndex;
                         else if(forwardPoint == _POSITION_STATUS_TYPES.End)
                         {
                             //Call itself again
-                            MyReference.Events.onMoveComplete(MyReference.CurrentStatus.Y + fd.MY - 1, MyReference.CurrentStatus.X + fd.MX - 1, 0);
+                            MyReference.DoMove(MyReference.CurrentStatus.Y + fd.MY - 1, MyReference.CurrentStatus.X + fd.MX - 1, 0);
                             MyReference.isNotComplete = false;
         //                    setTimeout(MyReference.Move, MyReference.MoveInterval);
                             return;
@@ -797,7 +812,7 @@ delete btIndex;
                         else if(rightPoint == _POSITION_STATUS_TYPES.End)
                         {
                             //Call itself again
-                            MyReference.Events.onMoveComplete(MyReference.CurrentStatus.Y + rd.MY - 1, MyReference.CurrentStatus.X + rd.MX - 1, 0);
+                            MyReference.DoMove(MyReference.CurrentStatus.Y + rd.MY - 1, MyReference.CurrentStatus.X + rd.MX - 1, 0);
                             MyReference.isNotComplete = false;
         //                    setTimeout(MyReference.Move, MyReference.MoveInterval);
                             return;
@@ -822,8 +837,8 @@ delete btIndex;
                             MyReference.CurrentStatus.X += nextDirection.MX;
                             MyReference.CurrentStatus.Y += nextDirection.MY;
                     
-                            //Call onMoveComplete
-                            MyReference.Events.onMoveComplete(MyReference.CurrentStatus.Y - 1, MyReference.CurrentStatus.X - 1, 0);
+                            //Call DoMove
+                            MyReference.DoMove(MyReference.CurrentStatus.Y - 1, MyReference.CurrentStatus.X - 1, 0);
                     
                             MyReference.UpdatePosiblesWays();
                     
@@ -836,10 +851,29 @@ delete btIndex;
                 MyReference.Public.isNotComplete = function() { 
                     return MyReference.isNotComplete;
                 };
-                MyReference.Public.Play = function() { 
+                MyReference.Public.Play =
+                MyReference.Play = function() { 
                     try
                     {
-                        MyReference.Move();
+                        MyReference.Start();
+                        //MyReference.Move();
+                    }
+                    catch(Error){ MyReference.Events.onError(Error); }
+                };
+                MyReference.Public.Start =
+                MyReference.Start = function() { 
+                    try
+                    {
+                        //Ask controler for permission to move.
+                        MyReference.Controler.AskForPermissionToMove(MyReference);
+                    }
+                    catch(Error){ MyReference.Events.onError(Error); }
+                };
+                MyReference.Public.SetControler =
+                MyReference.SetControler = function(controler) { 
+                    try
+                    {
+                        MyReference.Controler = controler;;
                     }
                     catch(Error){ MyReference.Events.onError(Error); }
                 };
