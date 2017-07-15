@@ -86,8 +86,8 @@ delete btIndex;
                     MyReference.DirectionsCount = 4;
                 if(!MyReference.Events)
                     MyReference.Events = {};
-                if(!MyReference.Events.onMoveComplete)
-                    MyReference.Events.onMoveComplete = function(x,y){ alert("x:'" + x + "',y:'" + y + "'") };
+                //if(!MyReference.Events.onMoveComplete)
+                  //MyReference.Events.onMoveComplete = function(x,y){ alert("x:'" + x + "',y:'" + y + "'") };
                 if(!MyReference.Events.onError)
                     MyReference.Events.onError = function(error){ window.status = error.Message; }
 
@@ -108,8 +108,8 @@ delete btIndex;
                 MyReference.Directions = [];
                 for(var iDir = 0; iDir < MyReference.DirectionsCount; iDir++)
                     MyReference.Directions.push(_DIRECTIONS[iDir]);
-
-                MyReference.isNotComplete = true;
+                MyReference.Id = PRIVATE_ATTRIBUTES_OBJECT.InstancesCount++;
+                //MyReference.isNotComplete = true;
                 MyReference.Move = null;
 //                MyReference.MoveInterval = 1;
                 MyReference.PossibleWaysCollection = {};
@@ -214,11 +214,10 @@ delete btIndex;
                         }
                         else if(leftPoint == _POSITION_STATUS_TYPES.End)
                         {
-                            //Call itself again
-                            MyReference.DoMove(MyReference.CurrentStatus.Y + ld.MY - 1, MyReference.CurrentStatus.X + ld.MX - 1, 0);
-                            MyReference.isNotComplete = false;
+                            return MyReference.DoMove(MyReference.CurrentStatus.Y + ld.MY - 1, MyReference.CurrentStatus.X + ld.MX - 1, 0);
+                            //MyReference.isNotComplete = false;
         //                    setTimeout(MyReference.Move, MyReference.MoveInterval);
-                            return;
+                            //return;
                         }
                     
                     
@@ -267,11 +266,10 @@ delete btIndex;
                         }
                         else if(forwardPoint == _POSITION_STATUS_TYPES.End)
                         {
-                            //Call itself again
-                            MyReference.DoMove(MyReference.CurrentStatus.Y + fd.MY - 1, MyReference.CurrentStatus.X + fd.MX - 1, 0);
-                            MyReference.isNotComplete = false;
+                            return MyReference.DoMove(MyReference.CurrentStatus.Y + fd.MY - 1, MyReference.CurrentStatus.X + fd.MX - 1, 0);
+                            //MyReference.isNotComplete = false;
         //                    setTimeout(MyReference.Move, MyReference.MoveInterval);
-                            return;
+                            //return;
                         }
                                                                                
 
@@ -319,11 +317,10 @@ delete btIndex;
                         }
                         else if(rightPoint == _POSITION_STATUS_TYPES.End)
                         {
-                            //Call itself again
-                            MyReference.DoMove(MyReference.CurrentStatus.Y + rd.MY - 1, MyReference.CurrentStatus.X + rd.MX - 1, 0);
-                            MyReference.isNotComplete = false;
+                            return MyReference.DoMove(MyReference.CurrentStatus.Y + rd.MY - 1, MyReference.CurrentStatus.X + rd.MX - 1, 0);
+                            //MyReference.isNotComplete = false;
         //                    setTimeout(MyReference.Move, MyReference.MoveInterval);
-                            return;
+                            //return;
                         }
 
 
@@ -370,20 +367,19 @@ delete btIndex;
                         }
                         else if(backwardPoint == _POSITION_STATUS_TYPES.End)
                         {
-                            //Call itself again
-                            MyReference.DoMove(MyReference.CurrentStatus.Y + bd.MY - 1, MyReference.CurrentStatus.X + bd.MX - 1, 0);
-                            MyReference.isNotComplete = false;
+                            return MyReference.DoMove(MyReference.CurrentStatus.Y + bd.MY - 1, MyReference.CurrentStatus.X + bd.MX - 1, 0);
+                            //MyReference.isNotComplete = false;
         //                    setTimeout(MyReference.Move, MyReference.MoveInterval);
-                            return;
+                            //return;
                         }
 
 
                         //Move conclusion.
                         if(!nextDirection)
                         {
-                            MyReference.isNotComplete = false;
+                            //MyReference.isNotComplete = false;
 
-                            alert("No move is possible.");
+                            //alert("No move is possible.");
 
                             return;
                         }
@@ -394,18 +390,24 @@ delete btIndex;
                             MyReference.CurrentStatus.X += nextDirection.MX;
                             MyReference.CurrentStatus.Y += nextDirection.MY;
                     
-                            //Call DoMove
-                            MyReference.DoMove(MyReference.CurrentStatus.Y - 1, MyReference.CurrentStatus.X - 1);
-                    
                             MyReference.UpdatePosiblesWays();
                     
                             //Set MyReference.Move.
                             MyReference.Move = MyReference.GoToNextPoint;
+
+                            return MyReference.DoMove(MyReference.CurrentStatus.Y - 1, MyReference.CurrentStatus.X - 1);
                         }
                     }
                     catch(Error){ MyReference.Events.onError(Error); }    
                 };
                 MyReference.DoMove = function (y, x) {
+                    return {
+                        position: {
+                            y: y,
+                            x: x,
+                        },
+                    };
+                    /*
                     //Use a settmeout to fire the event after finish the current stack.
                     setTimeout(
                         function() {
@@ -414,7 +416,10 @@ delete btIndex;
                             MyReference.Play();
                         },
                         1
-                    );
+                    );*/
+                };
+                MyReference.GetId = function() {
+                    return MyReference.Id;
                 };
                 MyReference.GetStage = function(matrixJSON) {
                     var stage = null;
@@ -511,19 +516,18 @@ delete btIndex;
                             MyReference.CurrentStatus.X = lx;
                             MyReference.CurrentStatus.Y = ly;
                     
-                            //Call DoMove
-                            MyReference.DoMove(MyReference.CurrentStatus.Y - 1, MyReference.CurrentStatus.X - 1, 0);
-                    
                             MyReference.UpdatePosiblesWays();
                     
                             //Set MyReference.Move
                             MyReference.Move = MyReference.GoToNextPoint;
                         
+                            return MyReference.DoMove(MyReference.CurrentStatus.Y - 1, MyReference.CurrentStatus.X - 1, 0);
+
         //                        //Call itself again
         //                        setTimeout(MyReference.Move, MyReference.MoveInterval);
                     
                             //Continue regular moving 
-                            return;
+                            //return;
                         }
                         else if((lastPossiblePoint.FoothCollection[lx]) && (lastPossiblePoint.FoothCollection[lx][ly]))
                         {
@@ -543,19 +547,18 @@ delete btIndex;
                             MyReference.CurrentStatus.X = fx;
                             MyReference.CurrentStatus.Y = fy;
                     
-                            //Call DoMove
-                            MyReference.DoMove(MyReference.CurrentStatus.Y - 1, MyReference.CurrentStatus.X - 1, 0);
-                    
                             MyReference.UpdatePosiblesWays();
 
                             //Set MyReference.Move
                             MyReference.Move = MyReference.GoToNextPoint;
                     
+                            return MyReference.DoMove(MyReference.CurrentStatus.Y - 1, MyReference.CurrentStatus.X - 1, 0);
+
         //                        //Call itself again
         //                        setTimeout(MyReference.Move, MyReference.MoveInterval);
                     
                             //Continue regular moving 
-                            return;
+                            //return;
                         }
                         else if(((lastPossiblePoint.FoothCollection[fx]) && (lastPossiblePoint.FoothCollection[fx][fy]))
                                 && ((!nextPosible) || (lastPossiblePoint.FoothCollection[fx][fy].ID < nextPosible.ID)))
@@ -576,19 +579,18 @@ delete btIndex;
                             MyReference.CurrentStatus.X = rx;
                             MyReference.CurrentStatus.Y = ry;
                     
-                            //Call DoMove
-                            MyReference.DoMove(MyReference.CurrentStatus.Y - 1, MyReference.CurrentStatus.X - 1, 0);
-                    
                             MyReference.UpdatePosiblesWays();
                     
                             //Set MyReference.Move
                             MyReference.Move = MyReference.GoToNextPoint;
                     
+                            return MyReference.DoMove(MyReference.CurrentStatus.Y - 1, MyReference.CurrentStatus.X - 1, 0);
+
         //                        //Call itself again
         //                        setTimeout(MyReference.Move, MyReference.MoveInterval);
 
                             //Continue regular moving 
-                            return;
+                            //return;
                         }
                         else if(((lastPossiblePoint.FoothCollection[rx]) && (lastPossiblePoint.FoothCollection[rx][ry]))
                                 && ((!nextPosible) || (lastPossiblePoint.FoothCollection[rx][ry].ID < nextPosible.ID)))
@@ -603,11 +605,10 @@ delete btIndex;
                         MyReference.CurrentStatus.X = nextPosible.X;
                         MyReference.CurrentStatus.Y = nextPosible.Y;
                 
-                        //Call DoMove
-                        MyReference.DoMove(MyReference.CurrentStatus.Y - 1, MyReference.CurrentStatus.X - 1, 0);
-                
                         MyReference.UpdatePosiblesWays();
                 
+                        return MyReference.DoMove(MyReference.CurrentStatus.Y - 1, MyReference.CurrentStatus.X - 1, 0);
+
         //                        //Call itself again
         //                        setTimeout(MyReference.GoToLastPossible, MyReference.MoveInterval);
                     }
@@ -683,11 +684,10 @@ delete btIndex;
                         }
                         else if(leftPoint == _POSITION_STATUS_TYPES.End)
                         {
-                            //Call itself again
-                            MyReference.DoMove(MyReference.CurrentStatus.Y + ld.MY - 1, MyReference.CurrentStatus.X + ld.MX - 1, 0);
-                            MyReference.isNotComplete = false;
+                            return MyReference.DoMove(MyReference.CurrentStatus.Y + ld.MY - 1, MyReference.CurrentStatus.X + ld.MX - 1, 0);
+                            //MyReference.isNotComplete = false;
         //                    setTimeout(MyReference.Move, MyReference.MoveInterval);
-                            return;
+                            //return;
                         }
                     
                     
@@ -749,11 +749,10 @@ delete btIndex;
                         }
                         else if(forwardPoint == _POSITION_STATUS_TYPES.End)
                         {
-                            //Call itself again
-                            MyReference.DoMove(MyReference.CurrentStatus.Y + fd.MY - 1, MyReference.CurrentStatus.X + fd.MX - 1, 0);
-                            MyReference.isNotComplete = false;
+                            return MyReference.DoMove(MyReference.CurrentStatus.Y + fd.MY - 1, MyReference.CurrentStatus.X + fd.MX - 1, 0);
+                            //MyReference.isNotComplete = false;
         //                    setTimeout(MyReference.Move, MyReference.MoveInterval);
-                            return;
+                            //return;
                         }
                     
                     
@@ -811,11 +810,10 @@ delete btIndex;
                         }
                         else if(rightPoint == _POSITION_STATUS_TYPES.End)
                         {
-                            //Call itself again
-                            MyReference.DoMove(MyReference.CurrentStatus.Y + rd.MY - 1, MyReference.CurrentStatus.X + rd.MX - 1, 0);
-                            MyReference.isNotComplete = false;
+                            return MyReference.DoMove(MyReference.CurrentStatus.Y + rd.MY - 1, MyReference.CurrentStatus.X + rd.MX - 1, 0);
+                            //MyReference.isNotComplete = false;
         //                    setTimeout(MyReference.Move, MyReference.MoveInterval);
-                            return;
+                            //return;
                         }
                 
                 
@@ -837,20 +835,19 @@ delete btIndex;
                             MyReference.CurrentStatus.X += nextDirection.MX;
                             MyReference.CurrentStatus.Y += nextDirection.MY;
                     
-                            //Call DoMove
-                            MyReference.DoMove(MyReference.CurrentStatus.Y - 1, MyReference.CurrentStatus.X - 1, 0);
-                    
                             MyReference.UpdatePosiblesWays();
                     
+                            return MyReference.DoMove(MyReference.CurrentStatus.Y - 1, MyReference.CurrentStatus.X - 1, 0);
+
                             //Call itself again
         //                    setTimeout(MyReference.Move, MyReference.MoveInterval);
                         }
                     }
                     catch(Error){ MyReference.Events.onError(Error); }
                 };
-                MyReference.Public.isNotComplete = function() { 
-                    return MyReference.isNotComplete;
-                };
+                //MyReference.Public.isNotComplete = function() { 
+                //    return MyReference.isNotComplete;
+                //};
                 MyReference.Public.Play =
                 MyReference.Play = function() { 
                     try
@@ -933,6 +930,7 @@ delete btIndex;
             }
             catch(Error) { Global.ShowError(Error); }
         }
+        PRIVATE_ATTRIBUTES_OBJECT.InstancesCount = 0;
     
         //#endregion
 

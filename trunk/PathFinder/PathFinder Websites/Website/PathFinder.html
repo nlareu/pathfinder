@@ -37,8 +37,8 @@
             sizeFactorTbx: document.getElementById('sizeFactorTbx'),
         };
 
-        function moveComplete(controler, y, x){
-            var result = controler.UpdatePosition(y, x);
+        //function moveComplete(controler, y, x){
+        //    var result = controler.UpdatePosition(y, x);
 
             /*if (result == true) {
                 setTimeout(
@@ -50,7 +50,7 @@
                     100
                 );
             }*/
-        }
+        //}
 
         function stop() {
             clearInterval(intervalID);
@@ -60,24 +60,24 @@
 
         function play()
         {
-            if (chkAuto.checked == true) 
-            {
+            //if (chkAuto.checked == true) 
+            //{
                 for (var i = 0, len = scref.pathFinders.length; i < len; i++) {
                     scref.pathFinders[i].Play();
                 }
 
                 //controler.Play();
 
-                intervalID = setTimeout(play, 100);
-            }
-            else
-            {
-                for (var i = 0, len = scref.pathFinders.length; i < len; i++) {
-                    scref.pathFinders[i].Play();
-                }
+                //intervalID = setTimeout(play, 100);
+            //}
+            //else
+            //{
+                //for (var i = 0, len = scref.pathFinders.length; i < len; i++) {
+                    //scref.pathFinders[i].Play();
+                //}
 
-                //controler.Play();
-            }
+                ////controler.Play();
+            //}
         }
 
         function reset() {
@@ -129,7 +129,7 @@
                 { 
                     Events: { 
                         onError: function (e) { console.error(e); }, 
-                        onMoveComplete: function (y, x) { moveComplete(controler, y, x); },
+                        //onMoveComplete: function (y, x) { moveComplete(controler, y, x); },
                     }, 
                 }
             );
@@ -137,7 +137,7 @@
             var controler = new PathFinderControler(
                 mapContainer, 
                 { 
-                    Algorithm: pf, 
+                    //Algorithm: pf, 
                     Events: { 
                         onError: function (e) { console.error(e); },
                     }, 
@@ -146,6 +146,7 @@
             );
             controler.SetFactorSize(parseInt(scref.sizeFactorTbx.value, 10));
             controler.Redraw(map);
+            controler.AddAlgorithm(pf);
 
             scref.pathFinders.push(controler);
         }

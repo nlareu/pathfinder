@@ -65,6 +65,7 @@
                 //#region Properties
 
                 MyReference.Algorithms = [];
+                MyReference.AlgorithmsMoving = {};
                 MyReference.Container = null;
                 MyReference.CurrentBlockTypeToPaint = window.BLOCK_TYPES.Names.Wall; //Current Position Status Type to Paint
                 MyReference.EditionMode.IsMouseDown = false;
@@ -114,9 +115,27 @@
                 };
                 MyReference.Public.AskForPermissionToMove =
                 MyReference.AskForPermissionToMove = function (finder) { 
-                    //Wait for some time to call move to do it really.
+                    //Wait for some time to call move to do it more real.
                     setTimeout(
-                        finder.Move,
+                        function () {
+                            var finderId = finder.GetId();
+
+                            if (!MyReference.AlgorithmsMoving[finderId]) {
+                                MyReference.AlgorithmsMoving[finderId] = finder;
+
+                                var result = finder.Move();
+
+                                if (result)
+                                    MyReference.UpdatePosition(result.position);
+
+                                delete MyReference.AlgorithmsMoving[finderId];
+
+                                finder.Play();
+                            }
+                            else {
+                                finder.Play();
+                            }
+                        },
                         100
                     );
                 };
@@ -553,31 +572,37 @@
                     }
                     catch (Error) { MyReference.Events.onError(Error); }
                 };
-                MyReference.Public.UpdatePosition =
-                MyReference.UpdatePosition = function(y, x) {
+//                MyReference.Public.UpdatePosition =
+                MyReference.UpdatePosition = function(position) {
                     try
                     {
-                        MyReference.MatrixJSON.Matrix[MyReference.Finder.Y][MyReference.Finder.X].Block.className = 
-                            MyReference.MatrixJSON.Matrix[MyReference.Finder.Y][MyReference.Finder.X].Block.className.replace(
-                                BLOCK_TYPES.Names.Move.ClassName
-                                , "");
+                        if (position) {
+                            var x = position.x,
+                                y = position.y;
 
-                        MyReference.MatrixJSON.Matrix[MyReference.Finder.Y][MyReference.Finder.X].Block.style.backgroundColor = 
-                            MyReference.GetBlockBackgroundColor(MyReference.MatrixJSON.Matrix[MyReference.Finder.Y][MyReference.Finder.X].Count);
+                            MyReference.MatrixJSON.Matrix[MyReference.Finder.Y][MyReference.Finder.X].Block.className = 
+                                MyReference.MatrixJSON.Matrix[MyReference.Finder.Y][MyReference.Finder.X].Block.className.replace(
+                                    BLOCK_TYPES.Names.Move.ClassName
+                                    , "");
 
-                        MyReference.Finder.X = x;
-                        MyReference.Finder.Y = y;
+                            MyReference.MatrixJSON.Matrix[MyReference.Finder.Y][MyReference.Finder.X].Block.style.backgroundColor = 
+                                MyReference.GetBlockBackgroundColor(MyReference.MatrixJSON.Matrix[MyReference.Finder.Y][MyReference.Finder.X].Count);
 
-                        MyReference.MatrixJSON.Matrix[MyReference.Finder.Y][MyReference.Finder.X].Count++;
+                            MyReference.Finder.X = x;
+                            MyReference.Finder.Y = y;
 
-                        MyReference.MatrixJSON.Matrix[MyReference.Finder.Y][MyReference.Finder.X].Block.className += " " + BLOCK_TYPES.Names.Move.ClassName;
+                            MyReference.MatrixJSON.Matrix[MyReference.Finder.Y][MyReference.Finder.X].Count++;
 
-                        if ((MyReference.MatrixJSON.PointEnd.X == x) && (MyReference.MatrixJSON.PointEnd.Y == y))
+                            MyReference.MatrixJSON.Matrix[MyReference.Finder.Y][MyReference.Finder.X].Block.className += " " + BLOCK_TYPES.Names.Move.ClassName;
+
+                            if ((MyReference.MatrixJSON.PointEnd.X == x) && (MyReference.MatrixJSON.PointEnd.Y == y))
                                 return true;
-                        else
+                            else
                                 return false;
+                        }
                     }
                     catch (Error) { MyReference.Events.onError(Error); }
+                    return false;
                 };
 
                 //#endregion
