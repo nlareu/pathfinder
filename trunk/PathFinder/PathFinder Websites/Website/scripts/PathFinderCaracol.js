@@ -123,26 +123,17 @@ delete btIndex;
                 MyReference.Initialize = function(mapMatrixMM) {
                     try
                     {
-                        if(!mapMatrixMM)
-                        {
-                            throw "Parameter 'map' can not be null.";
-                        }
-                        else
-                        {
-                            var mapMatrixJSON = mapMatrixMM.GetMatrixJSON();
+                        var mapMatrixJSON = mapMatrixMM.GetMatrixJSON();
 
-                            MyReference.Stage = MyReference.GetStage(mapMatrixJSON);
+                        MyReference.Stage = MyReference.GetStage(mapMatrixJSON);
 
-                            /* Set Move delegate. */
-                            MyReference.Move = MyReference.DoFirstMove;
+                        MyReference.CurrentStatus = {
+                            //X:mapMatrixJSON.PointStart.X + 1
+                            //,Y:mapMatrixJSON.PointStart.Y + 1
+                            Dir:_DIRECTIONS[1] /* Usually start to the "Up" direcction. */
+                        };
 
-                            /* Set starting state. */
-                            MyReference.CurrentStatus = {
-                                X:mapMatrixJSON.PointStart.X + 1
-                                ,Y:mapMatrixJSON.PointStart.Y + 1
-                                ,Dir:_DIRECTIONS[1] /* Usually start to the "Up" direcction. */
-                            };
-                        }
+                        MyReference.Move = MyReference.DoFirstMove;
                     }
                     catch(Error){ MyReference.Events.onError(Error); }
                 };
@@ -387,15 +378,15 @@ delete btIndex;
                         {
                             //Move 1 place depending the final direction.
                             MyReference.CurrentStatus.Dir = nextDirection;
-                            MyReference.CurrentStatus.X += nextDirection.MX;
-                            MyReference.CurrentStatus.Y += nextDirection.MY;
+                            //MyReference.CurrentStatus.X += nextDirection.MX;
+                            //MyReference.CurrentStatus.Y += nextDirection.MY;
                     
                             MyReference.UpdatePosiblesWays();
                     
                             //Set MyReference.Move.
                             MyReference.Move = MyReference.GoToNextPoint;
 
-                            return MyReference.DoMove(MyReference.CurrentStatus.Y - 1, MyReference.CurrentStatus.X - 1);
+                            return MyReference.DoMove(MyReference.CurrentStatus.Y += nextDirection.MY - 1, MyReference.CurrentStatus.X + nextDirection.MX - 1);
                         }
                     }
                     catch(Error){ MyReference.Events.onError(Error); }    
@@ -513,15 +504,15 @@ delete btIndex;
                         {
                             //Set current status
                             MyReference.CurrentStatus.Dir = ld;
-                            MyReference.CurrentStatus.X = lx;
-                            MyReference.CurrentStatus.Y = ly;
+                            //MyReference.CurrentStatus.X = lx;
+                            //MyReference.CurrentStatus.Y = ly;
                     
                             MyReference.UpdatePosiblesWays();
                     
                             //Set MyReference.Move
                             MyReference.Move = MyReference.GoToNextPoint;
                         
-                            return MyReference.DoMove(MyReference.CurrentStatus.Y - 1, MyReference.CurrentStatus.X - 1, 0);
+                            return MyReference.DoMove(ly - 1, lx - 1, 0);
 
         //                        //Call itself again
         //                        setTimeout(MyReference.Move, MyReference.MoveInterval);
@@ -544,15 +535,15 @@ delete btIndex;
                         {
                              //Set current status
                             MyReference.CurrentStatus.Dir = fd;
-                            MyReference.CurrentStatus.X = fx;
-                            MyReference.CurrentStatus.Y = fy;
+                            //MyReference.CurrentStatus.X = fx;
+                            //MyReference.CurrentStatus.Y = fy;
                     
                             MyReference.UpdatePosiblesWays();
 
                             //Set MyReference.Move
                             MyReference.Move = MyReference.GoToNextPoint;
                     
-                            return MyReference.DoMove(MyReference.CurrentStatus.Y - 1, MyReference.CurrentStatus.X - 1, 0);
+                            return MyReference.DoMove(fy - 1, fx - 1, 0);
 
         //                        //Call itself again
         //                        setTimeout(MyReference.Move, MyReference.MoveInterval);
@@ -576,15 +567,15 @@ delete btIndex;
                         {
                              //Set current status
                             MyReference.CurrentStatus.Dir = rd;
-                            MyReference.CurrentStatus.X = rx;
-                            MyReference.CurrentStatus.Y = ry;
+                            //MyReference.CurrentStatus.X = rx;
+                            //MyReference.CurrentStatus.Y = ry;
                     
                             MyReference.UpdatePosiblesWays();
                     
                             //Set MyReference.Move
                             MyReference.Move = MyReference.GoToNextPoint;
                     
-                            return MyReference.DoMove(MyReference.CurrentStatus.Y - 1, MyReference.CurrentStatus.X - 1, 0);
+                            return MyReference.DoMove(ry - 1, rx - 1, 0);
 
         //                        //Call itself again
         //                        setTimeout(MyReference.Move, MyReference.MoveInterval);
@@ -602,12 +593,12 @@ delete btIndex;
                         //Continue go to the last posible
                         //Set current status
                         MyReference.CurrentStatus.Dir = nextDirection;
-                        MyReference.CurrentStatus.X = nextPosible.X;
-                        MyReference.CurrentStatus.Y = nextPosible.Y;
+                        //MyReference.CurrentStatus.X = nextPosible.X;
+                        //MyReference.CurrentStatus.Y = nextPosible.Y;
                 
                         MyReference.UpdatePosiblesWays();
                 
-                        return MyReference.DoMove(MyReference.CurrentStatus.Y - 1, MyReference.CurrentStatus.X - 1, 0);
+                        return MyReference.DoMove(nextPosible.Y - 1, nextPosible.X - 1, 0);
 
         //                        //Call itself again
         //                        setTimeout(MyReference.GoToLastPossible, MyReference.MoveInterval);
@@ -832,12 +823,12 @@ delete btIndex;
                         {
                             //Move 1 place depending the final direction.
                             MyReference.CurrentStatus.Dir = nextDirection;
-                            MyReference.CurrentStatus.X += nextDirection.MX;
-                            MyReference.CurrentStatus.Y += nextDirection.MY;
+                            //MyReference.CurrentStatus.X += nextDirection.MX;
+                            //MyReference.CurrentStatus.Y += nextDirection.MY;
                     
                             MyReference.UpdatePosiblesWays();
                     
-                            return MyReference.DoMove(MyReference.CurrentStatus.Y - 1, MyReference.CurrentStatus.X - 1, 0);
+                            return MyReference.DoMove(MyReference.CurrentStatus.Y + nextDirection.MY - 1, MyReference.CurrentStatus.X + nextDirection.MX - 1, 0);
 
                             //Call itself again
         //                    setTimeout(MyReference.Move, MyReference.MoveInterval);
@@ -870,7 +861,16 @@ delete btIndex;
                 MyReference.SetControler = function(controler) { 
                     try
                     {
-                        MyReference.Controler = controler;;
+                        MyReference.Controler = controler;
+                    }
+                    catch(Error){ MyReference.Events.onError(Error); }
+                };
+                MyReference.Public.SetCurrentPosition =
+                MyReference.SetCurrentPosition = function(position) { 
+                    try
+                    {
+                        MyReference.CurrentStatus.Y = position.y + 1;
+                        MyReference.CurrentStatus.X = position.x + 1;
                     }
                     catch(Error){ MyReference.Events.onError(Error); }
                 };

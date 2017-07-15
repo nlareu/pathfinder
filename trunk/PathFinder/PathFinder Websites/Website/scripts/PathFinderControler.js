@@ -125,12 +125,22 @@
 
                                 var result = finder.Move();
 
-                                if (result)
+                                if (result) {
                                     MyReference.UpdatePosition(result.position);
+
+                                    finder.SetCurrentPosition(result.position);
+                                }
 
                                 delete MyReference.AlgorithmsMoving[finderId];
 
-                                finder.Play();
+                                if ((result.position.x == MyReference.MatrixJSON.PointEnd.X)
+                                    && (result.position.y == MyReference.MatrixJSON.PointEnd.Y))
+                                {
+                                    //alert('Congratulations');
+                                }
+                                else {
+                                    finder.Play();
+                                }
                             }
                             else {
                                 finder.Play();
@@ -273,7 +283,16 @@
                         //    MyReference.Algorithm.Play();
 
                         for (var i = 0, len = MyReference.Algorithms.length; i < len; i++) {
-                            MyReference.Algorithms[i].Play();
+                            var finder = MyReference.Algorithms[i],
+                                startPos = {
+                                    x: MyReference.MatrixJSON.PointStart.X,
+                                    y: MyReference.MatrixJSON.PointStart.Y,
+                                };
+
+
+                            finder.SetCurrentPosition(startPos);
+
+                            finder.Play();
                         }
                     }
                     catch (Error) { MyReference.Events.onError(Error); }
