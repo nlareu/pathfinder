@@ -3,6 +3,7 @@
 <head>
     <title>Path Finder</title>
 
+    <link href="styles/bootstrap.css" rel="stylesheet" type="text/css" />
     <link href="styles/PathFinderControler.css" rel="stylesheet" type="text/css" />
     <link href="styles/PathFinder.css" rel="stylesheet" type="text/css" />
 
@@ -13,43 +14,28 @@
 <body>
     <div class="controlerContainer">
         <div class="controler">
-            <input type="button" value="play" onclick="play();" style="width:80px;height:22px;margin-left:10px;" />
-            <input type="button" value="stop" onclick="stop();" style="width:80px;height:22px;margin-left:10px;margin-top:10px;" />    
+            <button class="btn" onclick="play();" style="margin-left:10px;">Play</button>
+            <button class="btn" onclick="stop();" style="margin-left:10px;">Stop</button>
             <label>Automatic <input type="checkbox"  id="chkAuto" checked="checked" /></label>
             <!--<input type="button" value="reset" onclick="reset();" style="width:80px;height:22px;margin-left:10px;margin-top:10px;" />-->
 
-            <input type="file" id="uploadBtn" onchange="loadMap(this);" />
-            <!--<textarea id="mapTxt"></textarea>-->
+            <label>Size Factor <input type="number" id="sizeFactorTbx" value="20" style="width:50px;" /></label>
+            <label class="btn btn-default" role="button">Upload Map<input type="file" id="uploadBtn" onchange="loadMap(this);" style="display:none;" /></label>
+            <textarea id="mapTxt"></textarea>
+            <button class="btn" onclick="redrawMap();">Redraw</button>
         </div>
     </div>
     <div id="mapsContainer"></div>
 
     <script type="text/javascript" language="javascript">
 
-        //var pf;
         var intervalID;        
-//        var MapInstance = new Map();
-        //var mapMatrixMP = new MapMatrix({ MatrixSource: GeneratedMap, Events: { onError: function (e) { console.error(e); } } });
-//            MapInstance.GenerateMap('51x37'); //51x37 //12x21//20x20//15x19//15x15//4x4//50x35
-        //var controler;
-        var screenRef = {
+        var scref = {
             mapsContainer: document.getElementById('mapsContainer'),
             mapTxt: document.getElementById('mapTxt'),
             pathFinders: [],
+            sizeFactorTbx: document.getElementById('sizeFactorTbx'),
         };
-
-//        function hola(){ 
-//            return arguments.callee.toString().match(/^function\s(\w+)/)
-//        }
-
-        //window.onload = function ()
-        //{
-        //    pf = new PathFinderCaracol(mapMatrixMP, { Events: { onError: function (e) { console.error(e); }, onMoveComplete: moveComplete } });
-
-         //   controler = new PathFinderControler(document.getElementById('mbContainer'), { Algorithm: pf, Events: { onError: function (e) { console.error(e); } }, MatrixSource: mapMatrixMP });
-        //    controler.Redraw(GeneratedMap);
-        //    //controler.Redraw({ MatrixVectorial: map});
-        //}
 
         function moveComplete(controler, y, x){
             var result = controler.UpdatePosition(y, x);
@@ -74,46 +60,10 @@
 
         function play()
         {
-            /*if (!controler) {
-                var mapCode = document.getElementById('mapTxt').value;
-
-                var map = eval('(function () { return ' + mapCode + ';})()');
-
-                var mapMatrixMP = new MapMatrix({ 
-                    MatrixSource: map, 
-                    Events: { 
-                        onError: function (e) { console.error(e); } 
-                    }, 
-                });
-
-                var pf = new PathFinderCaracol(
-                    mapMatrixMP, 
-                    { 
-                        Events: { 
-                            onError: function (e) { console.error(e); }, 
-                            onMoveComplete: moveComplete,
-                        }, 
-                    }
-                );
-
-                controler = new PathFinderControler(
-                    document.getElementById('mbContainer'), 
-                    { 
-                        Algorithm: pf, 
-                        Events: { 
-                            onError: function (e) { console.error(e); },
-                        }, 
-                        MatrixSource: mapMatrixMP,
-                    }
-                );
-                controler.Redraw(map);
-                //controler.Redraw({ MatrixVectorial: map});
-            } */
-
             if (chkAuto.checked == true) 
             {
-                for (var i = 0, len = screenRef.pathFinders.length; i < len; i++) {
-                    screenRef.pathFinders[i].Play();
+                for (var i = 0, len = scref.pathFinders.length; i < len; i++) {
+                    scref.pathFinders[i].Play();
                 }
 
                 //controler.Play();
@@ -122,8 +72,8 @@
             }
             else
             {
-                for (var i = 0, len = screenRef.pathFinders.length; i < len; i++) {
-                    screenRef.pathFinders[i].Play();
+                for (var i = 0, len = scref.pathFinders.length; i < len; i++) {
+                    scref.pathFinders[i].Play();
                 }
 
                 //controler.Play();
@@ -142,47 +92,11 @@
                 var reader = new FileReader();
 
                 reader.onload = function () {
-                    //screenRef.mapTxt.value = reader.result;
+                    //scref.mapTxt.value = reader.result;
 
-                    var mapCode = reader.result;
+                    var mapCode = reader.result;                    
 
-                    var mapContainer = document.createElement('div');
-                    mapContainer.className = 'mbContainer';
-
-                    screenRef.mapsContainer.appendChild(mapContainer);
-
-                    var map = eval('(function () { return ' + mapCode + ';})()');
-
-                    var mapMatrixMP = new MapMatrix({ 
-                        MatrixSource: map, 
-                        Events: { 
-                            onError: function (e) { console.error(e); } 
-                        }, 
-                    });
-
-                    var pf = new PathFinderCaracol(
-                        mapMatrixMP, 
-                        { 
-                            Events: { 
-                                onError: function (e) { console.error(e); }, 
-                                onMoveComplete: function (y, x) { moveComplete(controler, y, x); },
-                            }, 
-                        }
-                    );
-
-                    var controler = new PathFinderControler(
-                        mapContainer, 
-                        { 
-                            Algorithm: pf, 
-                            Events: { 
-                                onError: function (e) { console.error(e); },
-                            }, 
-                            MatrixSource: mapMatrixMP,
-                        }
-                    );
-                    controler.Redraw(map);
-
-                    screenRef.pathFinders.push(controler);
+                    redrawMap(mapCode);
 
                     target.value = '';                    
                 };
@@ -190,6 +104,50 @@
                 reader.readAsText(target.files[0]);
             }
             catch (error) { console.error(error); }
+        }
+
+        function redrawMap (mapCode) {
+            var mapContainer = document.createElement('div');
+            mapContainer.className = 'mbContainer';
+
+            scref.mapsContainer.appendChild(mapContainer);
+
+            if (!mapCode)
+                mapCode = scref.mapTxt.value;
+
+            var map = eval('(function () { return ' + mapCode + ';})()');
+
+            var mapMatrixMP = new MapMatrix({ 
+                MatrixSource: map, 
+                Events: { 
+                    onError: function (e) { console.error(e); } 
+                }, 
+            });
+
+            var pf = new PathFinderCaracol(
+                mapMatrixMP, 
+                { 
+                    Events: { 
+                        onError: function (e) { console.error(e); }, 
+                        onMoveComplete: function (y, x) { moveComplete(controler, y, x); },
+                    }, 
+                }
+            );
+
+            var controler = new PathFinderControler(
+                mapContainer, 
+                { 
+                    Algorithm: pf, 
+                    Events: { 
+                        onError: function (e) { console.error(e); },
+                    }, 
+                    MatrixSource: mapMatrixMP,
+                }
+            );
+            controler.SetFactorSize(parseInt(scref.sizeFactorTbx.value, 10));
+            controler.Redraw(map);
+
+            scref.pathFinders.push(controler);
         }
 
     </script>

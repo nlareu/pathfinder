@@ -88,8 +88,8 @@
                         }
                         else
                         {
-                            MyReference.Finder.X = 1;
-                            MyReference.Finder.Y = 1;
+                            MyReference.Finder.X = 0;
+                            MyReference.Finder.Y = 0;
                         }
 
                         if(MyReference.MatrixSource)
@@ -272,13 +272,13 @@
                         var gridContainer = document.createElement("div");
                         gridContainer.className = "GridContainer";
 
-                        for (var rowIndex = 1; rowIndex <= MyReference.MatrixJSON.Size.Height; rowIndex++) {
+                        for (var rowIndex = 0; rowIndex < MyReference.MatrixJSON.Size.Height; rowIndex++) {
                             var row = document.createElement("div");
                             row.className = "Row";
                             
                             var block;
                             
-                            for (var colIndex = 1; colIndex <= MyReference.MatrixJSON.Size.Width; colIndex++) {
+                            for (var colIndex = 0; colIndex < MyReference.MatrixJSON.Size.Width; colIndex++) {
                                 block = document.createElement("div");
 
                                 if (!MyReference.MatrixJSON.Matrix)
@@ -348,9 +348,9 @@
                                 MyReference.MatrixJSON.Matrix[rowIndex][colIndex].Block = block;
                             }
 
-                            block.className += " CellLast";
+                            //block.className += " CellLast";
 
-                            row.className = row.className.replace("Block", "Block BlockLast");
+                            //row.className = row.className.replace("Block", "Block BlockLast");
 
                             gridContainer.appendChild(row);
                         }

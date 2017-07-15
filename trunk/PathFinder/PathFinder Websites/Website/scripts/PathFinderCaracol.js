@@ -134,8 +134,8 @@ delete btIndex;
 
                             /* Set starting state. */
                             MyReference.CurrentStatus = {
-                                X:mapMatrixJSON.PointStart.X
-                                ,Y:mapMatrixJSON.PointStart.Y
+                                X:mapMatrixJSON.PointStart.X + 1
+                                ,Y:mapMatrixJSON.PointStart.Y + 1
                                 ,Dir:_DIRECTIONS[1] /* Usually start to the "Up" direcction. */
                             };
                         }
@@ -211,7 +211,7 @@ delete btIndex;
                         else if(leftPoint == _POSITION_STATUS_TYPES.End)
                         {
                             //Call itself again
-                            MyReference.Events.onMoveComplete(MyReference.CurrentStatus.Y + ld.MY, MyReference.CurrentStatus.X + ld.MX, 0);
+                            MyReference.Events.onMoveComplete(MyReference.CurrentStatus.Y + ld.MY - 1, MyReference.CurrentStatus.X + ld.MX - 1, 0);
                             MyReference.isNotComplete = false;
         //                    setTimeout(MyReference.Move, MyReference.MoveInterval);
                             return;
@@ -264,7 +264,7 @@ delete btIndex;
                         else if(forwardPoint == _POSITION_STATUS_TYPES.End)
                         {
                             //Call itself again
-                            MyReference.Events.onMoveComplete(MyReference.CurrentStatus.Y + fd.MY, MyReference.CurrentStatus.X + fd.MX, 0);
+                            MyReference.Events.onMoveComplete(MyReference.CurrentStatus.Y + fd.MY - 1, MyReference.CurrentStatus.X + fd.MX - 1, 0);
                             MyReference.isNotComplete = false;
         //                    setTimeout(MyReference.Move, MyReference.MoveInterval);
                             return;
@@ -316,7 +316,7 @@ delete btIndex;
                         else if(rightPoint == _POSITION_STATUS_TYPES.End)
                         {
                             //Call itself again
-                            MyReference.Events.onMoveComplete(MyReference.CurrentStatus.Y + rd.MY, MyReference.CurrentStatus.X + rd.MX, 0);
+                            MyReference.Events.onMoveComplete(MyReference.CurrentStatus.Y + rd.MY - 1, MyReference.CurrentStatus.X + rd.MX - 1, 0);
                             MyReference.isNotComplete = false;
         //                    setTimeout(MyReference.Move, MyReference.MoveInterval);
                             return;
@@ -367,7 +367,7 @@ delete btIndex;
                         else if(backwardPoint == _POSITION_STATUS_TYPES.End)
                         {
                             //Call itself again
-                            MyReference.Events.onMoveComplete(MyReference.CurrentStatus.Y + bd.MY, MyReference.CurrentStatus.X + bd.MX, 0);
+                            MyReference.Events.onMoveComplete(MyReference.CurrentStatus.Y + bd.MY - 1, MyReference.CurrentStatus.X + bd.MX - 1, 0);
                             MyReference.isNotComplete = false;
         //                    setTimeout(MyReference.Move, MyReference.MoveInterval);
                             return;
@@ -391,7 +391,7 @@ delete btIndex;
                             MyReference.CurrentStatus.Y += nextDirection.MY;
                     
                             //Call onMoveComplete
-                            MyReference.Events.onMoveComplete(MyReference.CurrentStatus.Y, MyReference.CurrentStatus.X);
+                            MyReference.Events.onMoveComplete(MyReference.CurrentStatus.Y - 1, MyReference.CurrentStatus.X - 1);
                     
                             MyReference.UpdatePosiblesWays();
                     
@@ -438,12 +438,12 @@ delete btIndex;
                                 stage[realWidth-1][iRow] = _POSITION_STATUS_TYPES.Sealed;
                    
                             /* Map the rest of the map stage json. */
-                            for(var y = 1; y < matrixJSON.Matrix.length; y++)
+                            for(var y = 0; y < matrixJSON.Matrix.length; y++)
                             //for(var x in matrixJSON.Matrix)
                             {
                                 var row = matrixJSON.Matrix[y];
                     
-                                for(var x = 1; x < row.length; x++)
+                                for(var x = 0; x < row.length; x++)
                                 //for(var y in col)
                                 {
                                     var cell = row[x];
@@ -454,12 +454,12 @@ delete btIndex;
                                     else if(cell.BlockType.ID == BLOCK_TYPES.Names.Wall.ID)
                                         posStatusType = _POSITION_STATUS_TYPES.Sealed;
 
-                                    stage[x][y] = posStatusType;
+                                    stage[x + 1][y + 1] = posStatusType;
                                 }
                             }               
                 
-                            stage[matrixJSON.PointStart.X][matrixJSON.PointStart.Y] = _POSITION_STATUS_TYPES.Start;
-                            stage[matrixJSON.PointEnd.X][matrixJSON.PointEnd.Y] = _POSITION_STATUS_TYPES.End;
+                            stage[matrixJSON.PointStart.X + 1][matrixJSON.PointStart.Y + 1] = _POSITION_STATUS_TYPES.Start;
+                            stage[matrixJSON.PointEnd.X + 1][matrixJSON.PointEnd.Y + 1] = _POSITION_STATUS_TYPES.End;
                         }
                     }
                     catch(Error){ MyReference.Events.onError(Error); }
@@ -497,7 +497,7 @@ delete btIndex;
                             MyReference.CurrentStatus.Y = ly;
                     
                             //Call onMoveComplete
-                            MyReference.Events.onMoveComplete(MyReference.CurrentStatus.Y, MyReference.CurrentStatus.X, 0);
+                            MyReference.Events.onMoveComplete(MyReference.CurrentStatus.Y - 1, MyReference.CurrentStatus.X - 1, 0);
                     
                             MyReference.UpdatePosiblesWays();
                     
@@ -529,7 +529,7 @@ delete btIndex;
                             MyReference.CurrentStatus.Y = fy;
                     
                             //Call onMoveComplete
-                            MyReference.Events.onMoveComplete(MyReference.CurrentStatus.Y, MyReference.CurrentStatus.X, 0);
+                            MyReference.Events.onMoveComplete(MyReference.CurrentStatus.Y - 1, MyReference.CurrentStatus.X - 1, 0);
                     
                             MyReference.UpdatePosiblesWays();
 
@@ -562,7 +562,7 @@ delete btIndex;
                             MyReference.CurrentStatus.Y = ry;
                     
                             //Call onMoveComplete
-                            MyReference.Events.onMoveComplete(MyReference.CurrentStatus.Y, MyReference.CurrentStatus.X, 0);
+                            MyReference.Events.onMoveComplete(MyReference.CurrentStatus.Y - 1, MyReference.CurrentStatus.X - 1, 0);
                     
                             MyReference.UpdatePosiblesWays();
                     
@@ -589,7 +589,7 @@ delete btIndex;
                         MyReference.CurrentStatus.Y = nextPosible.Y;
                 
                         //Call onMoveComplete
-                        MyReference.Events.onMoveComplete(MyReference.CurrentStatus.Y, MyReference.CurrentStatus.X, 0);
+                        MyReference.Events.onMoveComplete(MyReference.CurrentStatus.Y - 1, MyReference.CurrentStatus.X - 1, 0);
                 
                         MyReference.UpdatePosiblesWays();
                 
@@ -669,7 +669,7 @@ delete btIndex;
                         else if(leftPoint == _POSITION_STATUS_TYPES.End)
                         {
                             //Call itself again
-                            MyReference.Events.onMoveComplete(MyReference.CurrentStatus.Y + ld.MY, MyReference.CurrentStatus.X + ld.MX, 0);
+                            MyReference.Events.onMoveComplete(MyReference.CurrentStatus.Y + ld.MY - 1, MyReference.CurrentStatus.X + ld.MX - 1, 0);
                             MyReference.isNotComplete = false;
         //                    setTimeout(MyReference.Move, MyReference.MoveInterval);
                             return;
@@ -735,7 +735,7 @@ delete btIndex;
                         else if(forwardPoint == _POSITION_STATUS_TYPES.End)
                         {
                             //Call itself again
-                            MyReference.Events.onMoveComplete(MyReference.CurrentStatus.Y + fd.MY, MyReference.CurrentStatus.X + fd.MX, 0);
+                            MyReference.Events.onMoveComplete(MyReference.CurrentStatus.Y + fd.MY - 1, MyReference.CurrentStatus.X + fd.MX - 1, 0);
                             MyReference.isNotComplete = false;
         //                    setTimeout(MyReference.Move, MyReference.MoveInterval);
                             return;
@@ -797,7 +797,7 @@ delete btIndex;
                         else if(rightPoint == _POSITION_STATUS_TYPES.End)
                         {
                             //Call itself again
-                            MyReference.Events.onMoveComplete(MyReference.CurrentStatus.Y + rd.MY, MyReference.CurrentStatus.X + rd.MX, 0);
+                            MyReference.Events.onMoveComplete(MyReference.CurrentStatus.Y + rd.MY - 1, MyReference.CurrentStatus.X + rd.MX - 1, 0);
                             MyReference.isNotComplete = false;
         //                    setTimeout(MyReference.Move, MyReference.MoveInterval);
                             return;
@@ -823,7 +823,7 @@ delete btIndex;
                             MyReference.CurrentStatus.Y += nextDirection.MY;
                     
                             //Call onMoveComplete
-                            MyReference.Events.onMoveComplete(MyReference.CurrentStatus.Y, MyReference.CurrentStatus.X, 0);
+                            MyReference.Events.onMoveComplete(MyReference.CurrentStatus.Y - 1, MyReference.CurrentStatus.X - 1, 0);
                     
                             MyReference.UpdatePosiblesWays();
                     

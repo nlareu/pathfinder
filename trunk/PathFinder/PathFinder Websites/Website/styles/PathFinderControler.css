@@ -16,6 +16,8 @@
 /* Put after  to override the background-color property. */
 .BlockMove {
 	background-color: #66CCFF;
+	background-image: url('img/avatar.png');
+    background-size: 76px 76px;
 }
 
 .BlockWall {
@@ -77,21 +79,30 @@
 	display:table-row;
 }
 
+
 .MapContainer .MapSubContainer .GridContainer .Row .Block {
     font-size:10px;
     text-align:center;
-	/*border-right:1px solid #CECECE;
-	border-bottom:1px solid #CECECE;*/
-	border-left:none;
-	border-top:none;
-	border-right-width:1px;
-	border-right-style:solid;
-	border-bottom-width:1px;
-	border-bottom-style:solid;
-	display:table-cell;
+    /* border-left: none; */
+    /* border-top: none; */
+    /* border-right-width: 1px; */
+    /* border-right-style: solid; */
+    /* border-bottom-width: 1px; */
+    /* border-bottom-style: solid; */
+    /* display: table-cell; */
+    border-left: 1px solid;
+    border-top: 1px solid;
 }
 
-.MapContainer .MapSubContainer .GridContainer .Row .BlockLast {
+.GridContainer .Row .Block:last-of-type {
+    border-right:1px solid;
+}
+
+.GridContainer .Row:last-of-type .Block {
+    border-bottom:1px solid;
+}
+
+/*.MapContainer .MapSubContainer .GridContainer .Row .BlockLast {
 	border-right:none;
 }
 
@@ -106,9 +117,9 @@
 
 .MapContainer .MapSubContainer .GridContainer .RowLast .Block {
     font-size:10px;
-    line-height:14px;
+    line-height:14px;*/
 	/*border-right:1px solid #CECECE;*/
-	border-left:none;
+	/*border-left:none;
 	border-top:none;
 	border-bottom:none;
 	border-right-width:1px;
@@ -118,7 +129,7 @@
 
 .MapContainer .MapSubContainer .GridContainer .RowLast .BlockLast {
 	border-right:none;
-}
+}*/
 
 .MapContainer .BarLabels {
 	position:relative;
@@ -168,7 +179,7 @@
 
 .Block {
     float: left;
-    border: 1px solid black;
+    /*border: 1px solid black;*/
     box-sizing: content-box;
 }
 
@@ -176,6 +187,6 @@
     width: 100%;
 }
 
-.RowLast {
+/*.RowLast {
     width: 100%;
-}
+}*/

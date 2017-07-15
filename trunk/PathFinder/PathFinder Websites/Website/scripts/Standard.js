@@ -371,7 +371,7 @@ delete mmtIndex;
 
                 MyReference.Public.GetMatrixJSON =
                 MyReference.GetMatrixJSON = function() {
-                    var matrixRet = { Matrix: [], PointEnd: { X: 1, Y: 1 }, PointStart: { X: 1, Y: 1 }, Size: { Height: 1, Width: 1 } };
+                    var matrixRet = { Matrix: [], PointEnd: { X: 1, Y: 1 }, PointStart: { X: 0, Y: 0 }, Size: { Height: 2, Width: 2 } };
                     try
                     {
                         var matrixSourceType = MyReference.GetMatrixType(MyReference.MatrixSource);
