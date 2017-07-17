@@ -15,15 +15,43 @@
 
 /* Put after  to override the background-color property. */
 .BlockMove {
-	background-color: #66CCFF;
-	background-image: url('img/avatar.png');
-    background-size: 76px 76px;
+	background-color: transparent;
+	/*background-color: #66CCFF;*/
+	/*background-image: url('img/avatar.png');*/
+    /*background-size: 76px 76px;*/
+}
+
+.BlockMove.Up {
+	background-image: url('img/avatar.gif');
+    background-size: 290px 110px;
+    background-position: -60px -60px;
+}
+
+.BlockMove.Right {
+	background-image: url('img/avatar.gif');
+    background-size: 290px 110px;
+    background-position: -175px -60px;
+}
+
+.BlockMove.Down {
+	background-image: url('img/avatar.gif');
+	background-size: 290px 110px;
+    background-position: -60px -60px;
+}
+
+.BlockMove.Left {
+	background-image: url('img/avatar.gif');
+    background-size: 290px 110px;
+    background-position: -175px 60px;
 }
 
 .BlockWall {
-	background-color: #545454;
-	border: 1px solid #545454;
+	/*background-color: #545454;*/
+	/*border: 1px solid #545454;*/
 	/*z-index:201;*/
+	background-image: url('img/map.jpg');
+    background-size: 290px 110px;
+    background-position: -90px -60px;
 }
 
 /* Put after  to override the background-color property. */

@@ -16,6 +16,14 @@
     try {
         //#region PRIVATE_ATTRIBUTES_OBJECT
 
+        DIRECTIONS_TYPES =
+        {
+            Up: { ID: ++btIndex, ClassName: "Up" }
+            , Right: { ID: ++btIndex, ClassName: "Right" }
+            , Down: { ID: ++btIndex, ClassName: "Down" }
+            , Left: { ID: ++btIndex, ClassName: "Left" }
+        };
+
         var PRIVATE_ATTRIBUTES_OBJECT = function (options) {
             try {
                 /* 
@@ -372,6 +380,10 @@
 
                                 if(MyReference.EditionMode.Enabled == true)
                                     block.className += " BlockEdition";
+                                //Start block begins with direction class down by default
+                                else if (MyReference.MatrixJSON.Matrix[rowIndex][colIndex].BlockType.ID == BLOCK_TYPES.Names.Start.ID)
+                                    block.className += " " + DIRECTIONS_TYPES.Down.ClassName;
+                                    
 
                                 if(MyReference.FactorSize != null)
                                 {
@@ -597,22 +609,44 @@
                     {
                         if (position) {
                             var x = position.x,
-                                y = position.y;
+                                y = position.y,
+                                prevX = MyReference.Finder.X,
+                                prevY = MyReference.Finder.Y,
+                                newDirection;
+                            var prevBlock = MyReference.MatrixJSON.Matrix[prevY][prevX],
+                                curBlock = MyReference.MatrixJSON.Matrix[y][x];
 
-                            MyReference.MatrixJSON.Matrix[MyReference.Finder.Y][MyReference.Finder.X].Block.className = 
-                                MyReference.MatrixJSON.Matrix[MyReference.Finder.Y][MyReference.Finder.X].Block.className.replace(
-                                    BLOCK_TYPES.Names.Move.ClassName
-                                    , "");
+                            prevBlock.Block.className = prevBlock.Block.className.replace(BLOCK_TYPES.Names.Move.ClassName, "");
 
-                            MyReference.MatrixJSON.Matrix[MyReference.Finder.Y][MyReference.Finder.X].Block.style.backgroundColor = 
-                                MyReference.GetBlockBackgroundColor(MyReference.MatrixJSON.Matrix[MyReference.Finder.Y][MyReference.Finder.X].Count);
+                            prevBlock.Block.style.backgroundColor =  MyReference.GetBlockBackgroundColor(prevBlock.Count);
 
                             MyReference.Finder.X = x;
                             MyReference.Finder.Y = y;
 
-                            MyReference.MatrixJSON.Matrix[MyReference.Finder.Y][MyReference.Finder.X].Count++;
+                            curBlock.Count++;
 
-                            MyReference.MatrixJSON.Matrix[MyReference.Finder.Y][MyReference.Finder.X].Block.className += " " + BLOCK_TYPES.Names.Move.ClassName;
+                            curBlock.Block.className += " " + BLOCK_TYPES.Names.Move.ClassName;
+
+                            //Get direction
+                            if (prevX - x < 0)
+                                newDirection = DIRECTIONS_TYPES.Right.ClassName;
+                            else if (prevX - x > 0)
+                                newDirection = DIRECTIONS_TYPES.Left.ClassName;
+                            else if (prevY - y < 0)
+                                newDirection = DIRECTIONS_TYPES.Down.ClassName;
+                            else if (prevY - y > 0)
+                                newDirection = DIRECTIONS_TYPES.Up.ClassName;
+
+                            if (newDirection) {
+                                prevBlock.Block.className = curBlock.Block.className
+                                                                .replace(DIRECTIONS_TYPES.Up.ClassName, '')
+                                                                .replace(DIRECTIONS_TYPES.Right.ClassName, '')
+                                                                .replace(DIRECTIONS_TYPES.Down.ClassName, '')
+                                                                .replace(DIRECTIONS_TYPES.Left.ClassName, '');
+
+                                curBlock.Block.className += ' ' + newDirection;
+                            }
+
 
                             if ((MyReference.MatrixJSON.PointEnd.X == x) && (MyReference.MatrixJSON.PointEnd.Y == y))
                                 return true;
