@@ -77,6 +77,7 @@
                 MyReference.Container = null;
                 MyReference.CurrentBlockTypeToPaint = window.BLOCK_TYPES.Names.Wall; //Current Position Status Type to Paint
                 MyReference.EditionMode.IsMouseDown = false;
+                MyReference.IsRendered = false;
                 MyReference.MatrixJSON = null;
                 MyReference.Finder = { X: null, Y: null};
 
@@ -118,14 +119,21 @@
                         MyReference.Algorithms.push(algorithm);
 
                         algorithm.SetControler(MyReference);
+
+                        if (MyReference.IsRendered == true) {
+                            algorithm.SetCurrentPosition({
+                                x: MyReference.MatrixJSON.PointStart.X,
+                                y: MyReference.MatrixJSON.PointStart.Y,
+                            });
+                        }
                     }
                     catch (Error) { MyReference.Events.onError(Error); }
                 };
                 MyReference.Public.AskForPermissionToMove =
                 MyReference.AskForPermissionToMove = function (finder) { 
                     //Wait for some time to call move to do it more real.
-                    setTimeout(
-                        function () {
+                    //setTimeout(
+                    //    function () {
                             var finderId = finder.GetId();
 
                             if (!MyReference.AlgorithmsMoving[finderId]) {
@@ -134,28 +142,37 @@
                                 var result = finder.Move();
 
                                 if (result) {
+                                    var fn = function () {
+
+                                        if ((result.position.x == MyReference.MatrixJSON.PointEnd.X)
+                                            && (result.position.y == MyReference.MatrixJSON.PointEnd.Y))
+                                        {
+                                            finder.Render_Finish();
+                                            return;
+                                            //alert('Congratulations');
+                                        }
+
+                                        delete MyReference.AlgorithmsMoving[finderId];
+
+                                        finder.Play();
+                                    };
+
                                     MyReference.UpdatePosition(result.position);
 
-                                    finder.SetCurrentPosition(result.position);
-                                }
-
-                                delete MyReference.AlgorithmsMoving[finderId];
-
-                                if ((result.position.x == MyReference.MatrixJSON.PointEnd.X)
-                                    && (result.position.y == MyReference.MatrixJSON.PointEnd.Y))
-                                {
-                                    //alert('Congratulations');
+                                    finder.SetCurrentPosition(result.position, fn);
                                 }
                                 else {
+                                    delete MyReference.AlgorithmsMoving[finderId];
+
                                     finder.Play();
                                 }
                             }
                             else {
                                 finder.Play();
                             }
-                        },
-                        100
-                    );
+                    //    },
+                    //    100
+                    //);
                 };
                 MyReference.FillBarLabel = function(barLabel, count, horizontalMode) {
                     try {
@@ -271,8 +288,17 @@
                         //return '#FF5000';
                     }
                     catch (Error) { MyReference.Events.onError(Error); }
+                };                
+                MyReference.Public.GetFactorSize =
+                MyReference.GetFactorSize = function () { 
+                    return MyReference.FactorSize;
                 };
-                MyReference.Public.GetMatrix = function () { 
+                MyReference.Public.GetMapDom =
+                MyReference.GetMapDom = function () { 
+                    return MyReference.GridContainer;
+                };
+                MyReference.Public.GetMatrix =
+                MyReference.GetMatrix = function () { 
                     return MyReference.MatrixJSON;
                 };
                 MyReference.onError = function(error) {
@@ -290,15 +316,15 @@
                         //if (MyReference.Algorithm.isNotComplete())
                         //    MyReference.Algorithm.Play();
 
+                        var startPos = {
+                            x: MyReference.MatrixJSON.PointStart.X,
+                            y: MyReference.MatrixJSON.PointStart.Y,
+                        };
+
                         for (var i = 0, len = MyReference.Algorithms.length; i < len; i++) {
-                            var finder = MyReference.Algorithms[i],
-                                startPos = {
-                                    x: MyReference.MatrixJSON.PointStart.X,
-                                    y: MyReference.MatrixJSON.PointStart.Y,
-                                };
+                            var finder = MyReference.Algorithms[i];
 
-
-                            finder.SetCurrentPosition(startPos);
+                            //finder.SetCurrentPosition(startPos, finder.Play);
 
                             finder.Play();
                         }
@@ -338,7 +364,8 @@
                         //#region Grid
 
                         //Grid container
-                        var gridContainer = document.createElement("div");
+                        var gridContainer =
+                        MyReference.GridContainer = document.createElement("div");
                         gridContainer.className = "GridContainer";
 
                         for (var rowIndex = 0; rowIndex < MyReference.MatrixJSON.Size.Height; rowIndex++) {
@@ -462,6 +489,18 @@
                         mapContainer.appendChild(bottomBarLabels);
 
                         MyReference.Container.appendChild(mapContainer);
+
+                        MyReference.IsRendered = true;
+
+                        //Render finders if there are any added.
+                        for (var i = 0, len = MyReference.Algorithms.length; i < len; i++) {
+                            var finder = MyReference.Algorithms[i];
+
+                            finder.SetCurrentPosition({
+                                x: MyReference.MatrixJSON.PointStart.X,
+                                y: MyReference.MatrixJSON.PointStart.Y,
+                            });
+                        }
                     }
                     catch (Error) { MyReference.Events.onError(Error); }
                 };
@@ -628,7 +667,7 @@
                             curBlock.Block.className += " " + BLOCK_TYPES.Names.Move.ClassName;
 
                             //Get direction
-                            if (prevX - x < 0)
+                            /*if (prevX - x < 0)
                                 newDirection = DIRECTIONS_TYPES.Right.ClassName;
                             else if (prevX - x > 0)
                                 newDirection = DIRECTIONS_TYPES.Left.ClassName;
@@ -645,7 +684,7 @@
                                                                 .replace(DIRECTIONS_TYPES.Left.ClassName, '');
 
                                 curBlock.Block.className += ' ' + newDirection;
-                            }
+                            }*/
 
 
                             if ((MyReference.MatrixJSON.PointEnd.X == x) && (MyReference.MatrixJSON.PointEnd.Y == y))

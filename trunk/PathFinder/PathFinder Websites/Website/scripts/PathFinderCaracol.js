@@ -109,6 +109,7 @@ delete btIndex;
                 for(var iDir = 0; iDir < MyReference.DirectionsCount; iDir++)
                     MyReference.Directions.push(_DIRECTIONS[iDir]);
                 MyReference.Id = PRIVATE_ATTRIBUTES_OBJECT.InstancesCount++;
+                MyReference.IsRendered = false;
                 //MyReference.isNotComplete = true;
                 MyReference.Move = null;
 //                MyReference.MoveInterval = 1;
@@ -848,6 +849,79 @@ delete btIndex;
                     }
                     catch(Error){ MyReference.Events.onError(Error); }
                 };
+                MyReference.Render = function() { 
+                    try
+                    {
+                        MyReference.MapDom = MyReference.Controler.GetMapDom();
+                        MyReference.FactorSize = MyReference.Controler.GetFactorSize();
+
+                        MyReference.AvatarDom = document.createElement('div');
+                        MyReference.AvatarDom.style['position'] = 'absolute';
+                        MyReference.AvatarDom.style['width'] = MyReference.FactorSize + 'px';
+                        MyReference.AvatarDom.style['height'] = MyReference.FactorSize + 'px';
+
+                        MyReference.Render_DirDownStatic();
+
+                        MyReference.MapDom.appendChild(MyReference.AvatarDom);
+
+                        MyReference.IsRendered = true;
+                    }
+                    catch(Error){ MyReference.Events.onError(Error); }
+                };
+                MyReference.Render_DirDownStatic = function() { 
+                    try
+                    {
+                        MyReference.AvatarDom.style['background-image'] = 'url("styles/img/avatar-static.png")';
+                        MyReference.AvatarDom.style['background-size'] = '290px 110px';
+                        MyReference.AvatarDom.style['background-position'] = '-5px -138px';
+                    }
+                    catch(Error){ MyReference.Events.onError(Error); }
+                };
+                MyReference.Render_DirDownWalking = function() { 
+                    try
+                    {
+                        MyReference.AvatarDom.style['background-image'] = 'url("styles/img/avatar-walking.gif")';
+                        MyReference.AvatarDom.style['background-size'] = '290px 110px';
+                        MyReference.AvatarDom.style['background-position'] = '-60px -110px';
+                    }
+                    catch(Error){ MyReference.Events.onError(Error); }
+                };
+                MyReference.Render_DirLeftWalking = function() { 
+                    try
+                    {
+                        MyReference.AvatarDom.style['background-image'] = 'url("styles/img/avatar-walking.gif")';
+                        MyReference.AvatarDom.style['background-size'] = '290px 110px';
+                        MyReference.AvatarDom.style['background-position'] = '-175px -110px';
+                    }
+                    catch(Error){ MyReference.Events.onError(Error); }
+                };
+                MyReference.Render_DirRightWalking = function() { 
+                    try
+                    {
+                        MyReference.AvatarDom.style['background-image'] = 'url("styles/img/avatar-walking.gif")';
+                        MyReference.AvatarDom.style['background-size'] = '290px 110px';
+                        MyReference.AvatarDom.style['background-position'] = '-175px -60px';
+                    }
+                    catch(Error){ MyReference.Events.onError(Error); }
+                };
+                MyReference.Render_DirUpWalking = function() { 
+                    try
+                    {
+                        MyReference.AvatarDom.style['background-image'] = 'url("styles/img/avatar-walking.gif")';
+                        MyReference.AvatarDom.style['background-size'] = '290px 110px';
+                        MyReference.AvatarDom.style['background-position'] = '-60px -60px';
+
+                    }
+                    catch(Error){ MyReference.Events.onError(Error); }
+                };
+                MyReference.Public.Render_Finish =
+                MyReference.Render_Finish = function() { 
+                    try
+                    {
+                        MyReference.Render_DirDownStatic();
+                    }
+                    catch(Error){ MyReference.Events.onError(Error); }
+                };
                 MyReference.Public.Start =
                 MyReference.Start = function() { 
                     try
@@ -866,11 +940,55 @@ delete btIndex;
                     catch(Error){ MyReference.Events.onError(Error); }
                 };
                 MyReference.Public.SetCurrentPosition =
-                MyReference.SetCurrentPosition = function(position) { 
+                MyReference.SetCurrentPosition = function(position, callback) { 
                     try
                     {
+                        var wasRendered = MyReference.IsRendered;
+
+                        if (MyReference.IsRendered == false)
+                            MyReference.Render();
+
+                        var x = position.x + 1,
+                            y = position.y + 1,
+                            prevX = MyReference.CurrentStatus.X,
+                            prevY = MyReference.CurrentStatus.Y;
+
                         MyReference.CurrentStatus.Y = position.y + 1;
                         MyReference.CurrentStatus.X = position.x + 1;
+
+
+                        //Render direction
+                        if (prevX - x < 0)
+                            MyReference.Render_DirRightWalking();
+                        else if (prevX - x > 0)
+                            MyReference.Render_DirLeftWalking();
+                        else if (prevY - y < 0)
+                            MyReference.Render_DirDownWalking();
+                        else if (prevY - y > 0)
+                            MyReference.Render_DirUpWalking();
+
+
+                        //Update position in the dom. If it is not hgte initial position, use an animation.
+                        if (wasRendered == true) {
+                            $(MyReference.AvatarDom).animate(
+                                { 
+                                    top: (position.y * MyReference.FactorSize) + 'px',
+                                    left: (position.x * MyReference.FactorSize) + 'px',
+                                }, 
+                                {
+                                    complete: callback,
+                                    duration: 500,
+                                    easing: 'linear',
+                                }
+                            );
+                        }
+                        else {
+                            MyReference.AvatarDom.style['top'] = (position.y * MyReference.FactorSize) + 'px';
+                            MyReference.AvatarDom.style['left'] = (position.x * MyReference.FactorSize) + 'px';
+
+                            if (callback)
+                                callback();
+                        }
                     }
                     catch(Error){ MyReference.Events.onError(Error); }
                 };

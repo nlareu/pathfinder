@@ -1,26 +1,38 @@
 .BlockClear {
-	background-color: transparent;
-	border: 1px solid transparent;
+    /* background-color: transparent; */
+    /* border: 1px solid transparent; */
+    background-image: url(img/blocks.png);
+    background-size: 390px;
+    background-position: 0 0;
 }
 
 .BlockEnd {
-	background-color: #FF3300;
-	border: 1px solid #FF3300;
+	background-color: #6e9823;
+	background-image: url(img/block-end.png);
+    background-size: 195px 195px;
+    /* background-color: #FF3300; */
+    /* border: 1px solid #FF3300; */
+    background-position: -270px;
 }
 
 .BlockStart {
-	background-color: #00FF00;
-	border: 1px solid #00FF00;
+	/*background-color: #00FF00;*/
+	/*border: 1px solid #00FF00;*/
+    background-image: url(img/blocks.png);
+    background-size: 390px;
+    background-position: 0 0;
 }
 
 /* Put after  to override the background-color property. */
 .BlockMove {
-	background-color: transparent;
+	background-color: #6e9823;
+	/*background-color: transparent;*/
 	/*background-color: #66CCFF;*/
 	/*background-image: url('img/avatar.png');*/
     /*background-size: 76px 76px;*/
 }
 
+/*
 .BlockMove.Up {
 	background-image: url('img/avatar.gif');
     background-size: 290px 110px;
@@ -36,22 +48,21 @@
 .BlockMove.Down {
 	background-image: url('img/avatar.gif');
 	background-size: 290px 110px;
-    background-position: -60px -60px;
+    background-position: -60px -110px;
 }
 
 .BlockMove.Left {
 	background-image: url('img/avatar.gif');
     background-size: 290px 110px;
-    background-position: -175px 60px;
-}
+    background-position: -175px -110px;
+}*/
 
 .BlockWall {
-	/*background-color: #545454;*/
-	/*border: 1px solid #545454;*/
-	/*z-index:201;*/
-	background-image: url('img/map.jpg');
-    background-size: 290px 110px;
-    background-position: -90px -60px;
+	background-image: url(img/blocks.png);
+    background-size: 300px 308px;
+    background-color: #6e9823;
+    /* border: 1px solid #FF3300; */
+    background-position: -404px -51px;
 }
 
 /* Put after  to override the background-color property. */
@@ -118,7 +129,12 @@
     /* border-bottom-width: 1px; */
     /* border-bottom-style: solid; */
     /* display: table-cell; */
-    border-left: 1px solid;
+    /*border-left: 1px solid;*/
+    /*border-top: 1px solid;*/
+}
+
+.MapContainer .MapSubContainer .GridContainer .Row .Block.BlockEdition {
+	border-left: 1px solid;
     border-top: 1px solid;
 }
 
@@ -208,7 +224,8 @@
 .Block {
     float: left;
     /*border: 1px solid black;*/
-    box-sizing: content-box;
+    /* Very important that border are contained in the total width to prevent issues with avatar position. */
+    box-sizing: border-box;
 }
 
 .Row {
